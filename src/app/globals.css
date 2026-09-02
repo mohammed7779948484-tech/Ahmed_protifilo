@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The site is a single warm-ivory field; there is no dark variant. Declaring
+     the scheme stops browsers from auto-inverting form controls. */
+  :root {
+    color-scheme: light;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-terracotta) 30%, transparent);
+    color: var(--color-espresso);
+  }
+
+  :focus-visible {
+    outline: var(--rule-thin) solid var(--color-espresso);
+    outline-offset: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Editorial primitives
+   --------------------------------------------------------------------------- */
+
+@layer components {
+  /* The sheet: every page sits inside the same margins, so datum lines drawn by
+     different sections always align down the length of the site. */
+  .sheet {
+    width: 100%;
+    max-width: var(--sheet-max);
+    margin-inline: auto;
+    padding-inline: var(--sheet-margin);
+  }
+
+  /* Micro label — the tracked uppercase mono used on drawing sheets for corner
+     annotations, section numbers and field keys. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+
+  @media (min-width: 768px) {
+    .label {
+      font-size: 0.6875rem;
+    }
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 0.94;
+    letter-spacing: -0.015em;
+  }
+
+  /* Body measure for narrative columns — long lines are the fastest way to make
+     an editorial layout feel like a landing page. */
+  .prose-measure {
+    max-width: 40ch;
+    font-size: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+    line-height: 1.7;
+    color: var(--color-ink-muted);
+  }
+
+  .prose-measure > * + * {
+    margin-top: 1.15em;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+   --------------------------------------------------------------------------- */
+
+@layer utilities {
+  /* Reveal targets are hidden only once the inline motion script has confirmed
+     that motion is allowed. If that script never runs — no JavaScript, or a
+     reduced-motion preference — the attribute is absent and content is visible.
+     Content is therefore never unreachable because an animation did not run. */
+  html[data-motion="on"] [data-reveal] {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

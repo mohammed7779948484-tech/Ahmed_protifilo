@@ -1,0 +1,48 @@
+/* ---------------------------------------------------------------------------
+   Design tokens — Ahmed Belal Al-Maytami architectural portfolio.
+
+   The palette, linework weights and accent ratio are fixed by the approved
+   visual identity reference. Nothing here should be changed without a matching
+   change to that document.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* -- Approved palette ---------------------------------------------------- */
+  --color-ivory: #f1ebe3;
+  --color-stone: #d4cac0;
+  --color-terracotta: #b77d6e;
+  --color-espresso: #3b302b;
+  --color-graphite: #5e5955;
+
+  /* Semantic aliases. Body copy uses espresso; graphite is the secondary voice
+     (5.8:1 on ivory). Terracotta is 2.9:1 on ivory and is therefore reserved
+     for rules, marks and small filled areas — never for text on ivory. */
+  --color-page: var(--color-ivory);
+  --color-ink: var(--color-espresso);
+  --color-ink-muted: var(--color-graphite);
+  --color-rule: color-mix(in srgb, var(--color-graphite) 22%, transparent);
+  --color-rule-strong: color-mix(in srgb, var(--color-graphite) 40%, transparent);
+  --color-panel: color-mix(in srgb, var(--color-stone) 45%, var(--color-ivory));
+
+  /* -- Type ---------------------------------------------------------------- */
+  --font-display: var(--font-bodoni), "Didot", "Bodoni MT", Georgia, serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Fluid display scale. Clamped so very large desktops stay composed rather
+     than simply scaling up. */
+  --text-display-xl: clamp(3.25rem, 11vw, 10.5rem);
+  --text-display-lg: clamp(2.5rem, 7vw, 6rem);
+  --text-display-md: clamp(1.875rem, 4vw, 3.25rem);
+  --text-display-sm: clamp(1.375rem, 2.4vw, 2rem);
+
+  /* -- Sheet geometry ------------------------------------------------------ */
+  --sheet-margin: clamp(1.25rem, 5vw, 5.5rem);
+  --sheet-max: 108rem;
+  --rule-hair: 0.5px;
+  --rule-thin: 1px;
+
+  /* -- Motion -------------------------------------------------------------- */
+  --ease-sheet: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-reveal: 900ms;
+}
