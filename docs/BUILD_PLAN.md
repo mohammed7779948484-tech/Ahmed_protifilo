@@ -12,69 +12,39 @@ Single working document: source map, asset backlog, phase status, open items.
 
 ### Source acquisition status
 
-The identity PDF was read in full (both pages rendered and inspected).
+Both source documents have been read in full.
 
-The content PDF's **text layer** has been recovered through the Drive
-connector's text path and is the basis of all content currently in
-`src/content/`. Its **bytes have not reached this environment**, so no imagery
-is extracted yet:
+The content PDF reached this environment by being committed to the feature
+branch and read with `git show` — Google Drive's hosts are blocked by egress
+policy, the Drive connector refuses files over 10 MB and drops the session
+mid-transfer at 9.45 MB, and tmpfiles.org is blocked too. Only GitHub hosts are
+reachable, so a repository branch is the working transfer route if the source is
+ever needed again.
 
-- `drive.google.com`, `docs.google.com`, `drive.usercontent.google.com` are
-  blocked by egress policy (403 on CONNECT). `ahmedbelalmaytami.me` is also
-  unreachable. `github.com` and `raw.githubusercontent.com` *are* reachable.
-- The Drive connector refuses files over 10 MB outright, and at 9.45 MB the
-  session drops mid-transfer rather than returning the payload (reproduced 3×).
-- No Google OAuth token exists in the container, so the Drive REST API cannot
-  be authorized.
+All 23 pages were rendered and inspected. Pages 1–9, 12–16 and 23 are flattened
+single-image compositions (3200×2262 JPEG per page); pages 17–22 place their
+images individually.
 
-**To unblock:** put the PDF where this environment can read it — attach it to
-the conversation (attachments land on disk directly), or commit it to a branch
-of this repository, which can then be fetched over git.
+## 2. Assets
 
-### Page map
+42 plates extracted, 4.23 MB total, in `public/media/<slug>/`. The pipeline
+lives in the scratchpad (`extract_assets.py`, `optimize_assets.py`) and is
+reproducible from the PDF:
 
-| Page | Content | Recovered |
-| --- | --- | --- |
-| 1 | Cover — name, roles, disciplines, Rahhal render | text ✓ / image ✗ |
-| 2 | Profile | ✗ |
-| 3 | Capabilities / tools | ✗ |
-| 4 | Selected works index | ✗ |
-| 5–8 | Rahhal Fuel Station | ✗ |
-| 9 | Bakka Supermarket opener | ✗ |
-| 10 | Bakka — retail plan, 4 anchors, 9 functional zones | text ✓ / image ✗ |
-| 11 | Bakka — reflected ceiling plan, C1–C4 | text ✓ / image ✗ |
-| 12–13 | Bakka — remaining sheets | ✗ |
-| 14–15 | Residential Villa Facade Design | ✗ |
-| 16 | OXIVA — opener, design thesis, project data | text ✓ / image ✗ |
-| 17 | OXIVA — site context, terrain concept | text ✓ / image ✗ |
-| 18 | OXIVA — masterplan, 8 zones, circulation | text ✓ / image ✗ |
-| 19 | OXIVA — site elevations E/N 1:500, terrain | text ✓ / image ✗ |
-| 20 | OXIVA — programmed landscapes, social life | text ✓ / image ✗ |
-| 21 | OXIVA — programmed landscapes, active life | text ✓ / image ✗ |
-| 22 | OXIVA — hotel development | text ✓ / image ✗ |
-| 23 | Contact / closing | text ✓ |
+1. Plates are taken as 400 DPI page-region renders, cropped inside the source's
+   own dark caption bars — the site re-sets those captions as HTML on the ivory
+   field, so baking them into the image would duplicate them. Page-region
+   rendering (rather than raw embedded-image extraction) also composites the
+   soft masks on pages 19–22 correctly.
+2. Each plate is encoded once as WebP, capped at 2000 px wide: quality 93 for
+   linework, 86 for photography. `next/image` derives the responsive variants,
+   so shipping fixed widths would only duplicate bytes.
+3. Every plate carries real intrinsic dimensions and alt text grounded in what
+   the drawing or render actually shows.
 
-## 2. Asset backlog
-
-Every unextracted plate is a typed `PendingMedia` in `src/content/projects/`,
-carrying the source page it must come from. To find the full backlog:
-
-```bash
-grep -rn "pending: true" src/content/
-```
-
-Extraction procedure once the PDF is on disk:
-
-1. `pdfimages -list` (or pymupdf `page.get_images`) to inventory embedded rasters.
-2. Prefer the native embedded image; reconstruct soft masks where present.
-3. Where a plate is a composition of layers, render the page region at high DPI
-   and crop cleanly — never a low-resolution screen capture.
-4. Emit AVIF + WebP derivatives into `public/media/<slug>/`, keeping enough
-   resolution for full-bleed desktop without shipping 8K files.
-5. Replace each `PendingMedia` with a `MediaAsset` carrying real
-   `width`/`height` and alt text grounded in what the drawing shows.
-6. Compare each critical plate against its appearance in the PDF for crop,
-   mask, colour shift or blur before considering it done.
+`PendingMedia` remains in the content model as the guard that keeps a missing
+asset an explicit, labelled gap rather than a substituted image. Nothing uses it
+today — `grep -rn "pending: true" src/content/` should stay empty.
 
 ## 3. Design direction (chosen)
 
@@ -95,25 +65,39 @@ under headings, reference numbers, and figure keys.
 ## 4. Phase status
 
 - [x] 0 — environment, tooling, skill stack (210 skills at `.claude/skills/`)
-- [x] 1 — identity PDF read; content PDF text layer recovered
+- [x] 1 — both sources read in full; all 23 pages inspected
 - [x] 2 — official `create-next-app` scaffold, builds clean
 - [x] 3 — design direction chosen and documented
 - [x] 4 — tokens, fonts, grid, shell, nav, footer, motion, section system
-- [~] 5 — routes built; case studies carry recovered text, awaiting imagery
-- [ ] 6 — real-browser review at 390 / 768 / 1024 / 1440 / large
-- [ ] 7 — Impeccable + Taste + performance/accessibility review loop
-- [ ] 8 — production verification pass
+- [x] 5 — all routes and all four case studies built from the source
+- [x] 6 — real-browser review at 390 / 768 / 1024 / 1440 / 1920
+- [ ] 7 — Impeccable + anti-slop + performance/accessibility review loop
+- [ ] 8 — full production verification pass
 - [ ] 9 — cleanup
+
+### Fixed during browser review
+
+- Project opener and hero columns forced a 654 px track inside a 390 px
+  viewport; `overflow-x-clip` was hiding it rather than the layout being sound.
+  Grid and flex children holding long labels now carry `min-width: 0`, and
+  `.sheet` sets it too.
+- The hero image field did not fill its column: `Plate` gained a `fill` mode
+  built on `next/image`'s own `fill`.
+- The hero title broke across three lines with an orphaned "Al-"; titles in the
+  5/12 column now use `--text-display-hero`, clamped against the column.
+- Two crops kept source artefacts (a page header line on the Rahhal hero, the
+  sheet's ivory surround on the villa cover) and were re-cut.
+- The two hero corner labels wrapped into each other on narrow viewports and
+  now stack below the `sm` breakpoint.
 
 ## 5. Open items
 
-1. **Blocking:** obtain the content PDF bytes (see acquisition status above).
-2. Pages 2–9 and 12–15 text is not in the connector's rendering; read it from
-   the PDF directly once available. Rahhal and Villa have no sections yet.
-3. `profile.intro` (page 2) and `capabilities` (page 3) are empty by design
-   until the source supplies them — both render as nothing today.
-4. Real-browser QA has not run yet; no screenshots have been taken.
-5. `agent-browser` skill needs `npm i -g agent-browser && agent-browser install`
+1. The 9.45 MB source PDF sits at the repository root on this branch, committed
+   as the file-transfer route. It is not needed by the build — remove it before
+   merge if the repo should not carry it (history will still hold the blob).
+2. Phase 7's specialist review loop and a formal accessibility/performance audit
+   have not run.
+3. `agent-browser` needs `npm i -g agent-browser && agent-browser install`
    before it can drive a browser.
 
 ## 6. Verification checklist
@@ -121,8 +105,9 @@ under headings, reference numbers, and figure keys.
 - [x] `pnpm lint` clean
 - [x] `pnpm exec tsc --noEmit` clean
 - [x] `pnpm build` clean — 13 routes, all static
-- [ ] no console errors / hydration warnings in a real browser
-- [ ] responsive review, no horizontal overflow
-- [ ] keyboard nav and visible focus throughout
-- [ ] reduced-motion verified
-- [ ] every project's facts and team attribution checked against the PDF
+- [x] no console errors in a real browser at five widths
+- [x] responsive review, no horizontal overflow at 390–1920
+- [x] reduced-motion path verified (captures run with `reducedMotion: reduce`)
+- [x] every project's facts and team attribution checked against the PDF
+- [ ] keyboard nav and visible focus walked through by hand
+- [ ] Lighthouse / bundle audit

@@ -28,10 +28,10 @@ export function VerticalSeams({
             left: `${position * 100}%`,
             width: `${index % 2 === 0 ? 14 : 9}%`,
             background:
-              "linear-gradient(90deg, color-mix(in srgb, var(--color-ivory) 34%, transparent), color-mix(in srgb, var(--color-ivory) 8%, transparent))",
+              "linear-gradient(90deg, color-mix(in srgb, var(--color-ivory) 22%, transparent), color-mix(in srgb, var(--color-ivory) 3%, transparent))",
           }}
         >
-          <div className="absolute inset-y-0 left-0 w-px bg-[color-mix(in_srgb,var(--color-ivory)_45%,transparent)]" />
+          <div className="absolute inset-y-0 left-0 w-px bg-[color-mix(in_srgb,var(--color-ivory)_32%,transparent)]" />
         </div>
       ))}
     </div>

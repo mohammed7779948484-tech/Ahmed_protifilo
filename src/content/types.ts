@@ -158,6 +158,13 @@ export interface Project {
   sourcePages: [number, number];
 }
 
+/** A figure from the profile sheet, e.g. "05 — Client-facing projects". */
+export interface ProfileMetric {
+  value: string;
+  label: string;
+  note?: string;
+}
+
 export interface Profile {
   name: string;
   /** Full legal form of the name, as the closing page gives it. */
@@ -165,14 +172,23 @@ export interface Profile {
   roles: string[];
   location: string;
   availability?: string;
+  /** Two-part headline from the profile sheet; the second half is emphasised. */
+  headline?: { lead: string; emphasis: string };
   /** Paragraphs from the profile page of the master portfolio. */
   intro: string[];
+  metrics: ProfileMetric[];
+  portrait?: MediaAsset;
   email?: string;
   phone?: string;
   links: { label: string; href: string }[];
+  languages?: string[];
+  /** Standards familiarity as the source states it. */
+  standards?: string[];
 }
 
 export interface CapabilityGroup {
+  /** Sheet reference, e.g. "01". */
+  key: string;
   heading: string;
   items: string[];
 }

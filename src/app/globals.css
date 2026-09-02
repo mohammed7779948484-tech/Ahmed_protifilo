@@ -56,6 +56,10 @@
      different sections always align down the length of the site. */
   .sheet {
     width: 100%;
+    /* Sheets sit inside grid and flex children. Without this, a long label's
+       max-content contribution sets a floor on the track width and the column
+       silently grows past the viewport. */
+    min-width: 0;
     max-width: var(--sheet-max);
     margin-inline: auto;
     padding-inline: var(--sheet-margin);

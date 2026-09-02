@@ -11,6 +11,8 @@ interface PlateProps {
   preload?: boolean;
   /** Crop to a fixed ratio instead of honouring the asset's own proportions. */
   aspect?: string;
+  /** Cover the parent box instead of setting the plate's own height. */
+  fill?: boolean;
   className?: string;
   imageClassName?: string;
 }
@@ -27,6 +29,7 @@ export function Plate({
   sizes,
   preload = false,
   aspect,
+  fill = false,
   className,
   imageClassName,
 }: PlateProps) {
@@ -37,29 +40,43 @@ export function Plate({
       <div
         className={cn(
           "relative w-full overflow-hidden",
+          fill && "h-full",
           isLinework
             ? "bg-[var(--color-page)] p-2 md:p-4"
             : "bg-[var(--color-panel)]",
         )}
-        style={aspect ? { aspectRatio: aspect } : undefined}
+        style={aspect && !fill ? { aspectRatio: aspect } : undefined}
       >
-        <Image
-          src={media.src}
-          alt={media.alt}
-          width={media.width}
-          height={media.height}
-          sizes={sizes}
-          preload={preload}
-          loading={preload ? "eager" : "lazy"}
-          quality={82}
-          className={cn(
-            aspect
-              ? "absolute inset-0 h-full w-full object-cover"
-              : "h-auto w-full",
-            isLinework && "mix-blend-multiply",
-            imageClassName,
-          )}
-        />
+        {fill ? (
+          <Image
+            src={media.src}
+            alt={media.alt}
+            fill
+            sizes={sizes}
+            preload={preload}
+            loading={preload ? "eager" : "lazy"}
+            quality={82}
+            className={cn("object-cover", imageClassName)}
+          />
+        ) : (
+          <Image
+            src={media.src}
+            alt={media.alt}
+            width={media.width}
+            height={media.height}
+            sizes={sizes}
+            preload={preload}
+            loading={preload ? "eager" : "lazy"}
+            quality={82}
+            className={cn(
+              aspect
+                ? "absolute inset-0 h-full w-full object-cover"
+                : "h-auto w-full",
+              isLinework && "mix-blend-multiply",
+              imageClassName,
+            )}
+          />
+        )}
       </div>
 
       {media.caption && (

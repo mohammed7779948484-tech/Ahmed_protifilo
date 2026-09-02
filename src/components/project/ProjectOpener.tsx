@@ -12,7 +12,7 @@ export function ProjectOpener({ project }: { project: Project }) {
   return (
     <header className="border-b border-[var(--color-rule)]">
       <div className="grid lg:grid-cols-12">
-        <div className="relative order-2 flex flex-col justify-between lg:order-1 lg:col-span-5 lg:border-r lg:border-[var(--color-rule)]">
+        <div className="relative order-2 flex min-w-0 flex-col justify-between lg:order-1 lg:col-span-5 lg:border-r lg:border-[var(--color-rule)]">
           <div
             aria-hidden="true"
             className="absolute inset-y-0 left-0 hidden w-[3px] bg-[var(--color-terracotta)] lg:block"
@@ -26,7 +26,7 @@ export function ProjectOpener({ project }: { project: Project }) {
           </div>
 
           <div className="sheet py-12 lg:py-16">
-            <h1 className="display text-[length:var(--text-display-lg)] text-[var(--color-ink)]">
+            <h1 className="display text-[length:var(--text-display-hero)] text-[var(--color-ink)]">
               {project.title}
             </h1>
 
@@ -64,12 +64,13 @@ export function ProjectOpener({ project }: { project: Project }) {
           </div>
         </div>
 
-        <div className="relative order-1 min-h-[46svh] lg:order-2 lg:col-span-7">
+        <div className="relative order-1 min-h-[46svh] min-w-0 lg:order-2 lg:col-span-7">
           {project.cover && (
             <MediaSlotView
               slot={project.cover}
               sizes="(max-width: 1024px) 100vw, 58vw"
               preload
+              fill
               className="h-full"
             />
           )}

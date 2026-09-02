@@ -7,6 +7,7 @@ interface MediaSlotViewProps {
   sizes: string;
   preload?: boolean;
   aspect?: string;
+  fill?: boolean;
   className?: string;
 }
 
@@ -19,6 +20,7 @@ export function MediaSlotView({
   sizes,
   preload,
   aspect,
+  fill,
   className,
 }: MediaSlotViewProps) {
   if (isPendingMedia(slot)) {
@@ -38,6 +40,7 @@ export function MediaSlotView({
       sizes={sizes}
       preload={preload}
       aspect={aspect}
+      fill={fill}
       className={className}
     />
   );

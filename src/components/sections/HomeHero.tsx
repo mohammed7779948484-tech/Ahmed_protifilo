@@ -16,7 +16,7 @@ export function HomeHero({ cover }: { cover?: MediaSlot }) {
     <section className="relative border-b border-[var(--color-rule)]">
       <div className="grid min-h-[78svh] grid-cols-1 lg:min-h-[86svh] lg:grid-cols-12">
         {/* Information field */}
-        <div className="relative order-2 flex flex-col justify-between lg:order-1 lg:col-span-5 lg:border-r lg:border-[var(--color-rule)]">
+        <div className="relative order-2 flex min-w-0 flex-col justify-between lg:order-1 lg:col-span-5 lg:border-r lg:border-[var(--color-rule)]">
           {/* The terracotta edge mark from the cover, held to a sliver. */}
           <div
             aria-hidden="true"
@@ -33,7 +33,7 @@ export function HomeHero({ cover }: { cover?: MediaSlot }) {
               {disciplines.join("  ·  ")}
             </Label>
 
-            <h1 className="display mt-6 text-[length:var(--text-display-lg)] text-[var(--color-ink)]">
+            <h1 className="display mt-6 text-[length:var(--text-display-hero)] text-[var(--color-ink)]">
               {profile.name}
             </h1>
 
@@ -60,10 +60,12 @@ export function HomeHero({ cover }: { cover?: MediaSlot }) {
             </Link>
           </div>
 
-          <div className="sheet flex items-baseline justify-between border-t border-[var(--color-rule)] py-5">
+          {/* Stacked on narrow viewports: side by side, these two labels wrap
+              into each other and the corner annotation stops reading as one. */}
+          <div className="sheet flex flex-col gap-2 border-t border-[var(--color-rule)] py-5 sm:flex-row sm:items-baseline sm:justify-between">
             <Label>{profile.location}</Label>
             {profile.availability && (
-              <Label className="text-right text-[var(--color-terracotta)]">
+              <Label className="text-[var(--color-terracotta)] sm:text-right">
                 {profile.availability}
               </Label>
             )}
@@ -71,12 +73,13 @@ export function HomeHero({ cover }: { cover?: MediaSlot }) {
         </div>
 
         {/* Image field */}
-        <div className="relative order-1 min-h-[52svh] lg:order-2 lg:col-span-7 lg:min-h-0">
+        <div className="relative order-1 min-h-[52svh] min-w-0 lg:order-2 lg:col-span-7 lg:min-h-0">
           {cover && (
             <MediaSlotView
               slot={cover}
               sizes="(max-width: 1024px) 100vw, 58vw"
               preload
+              fill
               className="h-full"
             />
           )}

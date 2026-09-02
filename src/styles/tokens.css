@@ -33,6 +33,9 @@
      than simply scaling up. */
   --text-display-xl: clamp(3.25rem, 11vw, 10.5rem);
   --text-display-lg: clamp(2.5rem, 7vw, 6rem);
+  /* The hero and project titles sit in a 5/12 column, so they are clamped
+     against that column's width, not the viewport's. */
+  --text-display-hero: clamp(2.375rem, 4.4vw, 4.25rem);
   --text-display-md: clamp(1.875rem, 4vw, 3.25rem);
   --text-display-sm: clamp(1.375rem, 2.4vw, 2rem);
 
