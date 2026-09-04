@@ -1,6 +1,6 @@
 @AGENTS.md
 
-# Ahmed Belal Al-Maytami — Architectural Portfolio
+# Ahmed Belal Al-Maytami — Architectural Portfolio 
 
 Editorial portfolio site for an architectural and interior designer. Next.js 16
 App Router, React 19, TypeScript, Tailwind v4 (CSS-first `@theme`), pnpm.
